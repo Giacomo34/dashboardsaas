@@ -2,10 +2,12 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
+import { useLang } from '@/context/LangContext';
 
 export default function StatusPage(props: { params: Promise<{ tableId: string }> }) {
   const params = React.use(props.params);
   const { clearCart } = useCart();
+  const { t } = useLang();
   const [orderId, setOrderId] = useState('');
 
   useEffect(() => {
@@ -23,13 +25,13 @@ export default function StatusPage(props: { params: Promise<{ tableId: string }>
           ✓
         </div>
         
-        <h1 className="text-3xl font-black text-brand mb-4">Ordine Ricevuto!</h1>
+        <h1 className="text-3xl font-black text-brand mb-4">{t('orderReceived')}</h1>
         <p className="text-stone-600 text-lg mb-8 font-medium">
-          La cucina sta già preparando i tuoi piatti per la <strong className="text-brand">Mesa {params.tableId}</strong>.
+          {t('preparing')} <strong className="text-brand">{t('mesa')} {params.tableId}</strong>.
         </p>
 
         <div className="bg-white border border-stone-200 p-6 rounded-2xl w-full max-w-sm mb-12 shadow-sm">
-          <p className="text-stone-400 font-bold uppercase tracking-widest text-xs mb-1">Numero Ordine</p>
+          <p className="text-stone-400 font-bold uppercase tracking-widest text-xs mb-1">{t('orderNum')}</p>
           <p className="text-2xl font-mono font-bold text-stone-800">#{orderId || '...'}</p>
         </div>
       </div>
@@ -39,7 +41,7 @@ export default function StatusPage(props: { params: Promise<{ tableId: string }>
           href={`/app/${params.tableId}/menu`}
           className="block w-full h-14 border-[3px] border-accent text-accent rounded-full font-bold text-lg text-center flex items-center justify-center active:bg-accent/10 transition-colors"
         >
-          Ordina di nuovo
+          {t('orderAgain')}
         </Link>
       </div>
 

@@ -2,11 +2,20 @@ import React, { use, useState } from 'react';
 import { menuData } from '@/data/menu';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
+import { useLang } from '@/context/LangContext';
 
 export default function MobileMenuPage(props: { params: Promise<{ tableId: string }> }) {
   const params = use(props.params);
   const { totalItems, totalPrice } = useCart();
   const [showCallModal, setShowCallModal] = useState(false);
+  const { t, lang, setLang } = useLang();
+
+  // Simple language switcher helper
+  const nextLang = () => {
+    if (lang === 'es') setLang('en');
+    else if (lang === 'en') setLang('it');
+    else setLang('es');
+  };
 
   return (
     <div className="min-h-screen bg-[#FDFBF7] font-sans pb-24 text-stone-900 relative">
@@ -15,14 +24,22 @@ export default function MobileMenuPage(props: { params: Promise<{ tableId: strin
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-xl font-bold text-[#800020]">Babaua Chiringuito</h1>
-            <p className="text-sm text-stone-500">Mesa {params.tableId}</p>
+            <p className="text-sm text-stone-500">{t('mesa')} {params.tableId}</p>
           </div>
-          <button 
-            onClick={() => setShowCallModal(true)}
-            className="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-xl hover:bg-stone-200 transition-colors shadow-sm"
-          >
-            🛎️
-          </button>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={nextLang}
+              className="px-2 py-1 bg-stone-100 rounded text-xs font-bold uppercase text-stone-600 border border-stone-200"
+            >
+              {lang === 'es' ? '🇪🇸 ES' : lang === 'en' ? '🇬🇧 EN' : '🇮🇹 IT'}
+            </button>
+            <button 
+              onClick={() => setShowCallModal(true)}
+              className="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-xl hover:bg-stone-200 transition-colors shadow-sm"
+            >
+              🛎️
+            </button>
+          </div>
         </div>
       </header>
 
@@ -120,7 +137,7 @@ export default function MobileMenuPage(props: { params: Promise<{ tableId: strin
               <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center font-bold text-sm">
                 {totalItems}
               </div>
-              <span className="font-bold text-lg">Ver Carrito</span>
+              <span className="font-bold text-lg">{t('viewCart')}</span>
             </div>
             <span className="font-bold text-lg">€ {totalPrice.toLocaleString('es-ES', { minimumFractionDigits: 1 })}</span>
           </Link>
@@ -132,29 +149,29 @@ export default function MobileMenuPage(props: { params: Promise<{ tableId: strin
         <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-4">
            <div className="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl animate-in slide-in-from-bottom-10">
               <div className="flex justify-between items-center mb-6">
-                <h3 className="font-bold text-xl text-stone-800">Serve aiuto?</h3>
+                <h3 className="font-bold text-xl text-stone-800">{t('needHelp')}</h3>
                 <button onClick={() => setShowCallModal(false)} className="w-8 h-8 bg-stone-100 rounded-full flex items-center justify-center text-stone-500">✕</button>
               </div>
               <div className="grid grid-cols-2 gap-3 mb-6">
                  <button onClick={() => setShowCallModal(false)} className="flex flex-col items-center justify-center gap-2 p-4 bg-stone-50 rounded-2xl border border-stone-100 hover:border-brand active:bg-stone-100 transition-colors">
                    <span className="text-2xl">💸</span>
-                   <span className="text-xs font-bold text-stone-700">Conto</span>
+                   <span className="text-xs font-bold text-stone-700">{t('bill')}</span>
                  </button>
                  <button onClick={() => setShowCallModal(false)} className="flex flex-col items-center justify-center gap-2 p-4 bg-stone-50 rounded-2xl border border-stone-100 hover:border-brand active:bg-stone-100 transition-colors">
                    <span className="text-2xl">🧻</span>
-                   <span className="text-xs font-bold text-stone-700">Pulizia</span>
+                   <span className="text-xs font-bold text-stone-700">{t('clean')}</span>
                  </button>
                  <button onClick={() => setShowCallModal(false)} className="flex flex-col items-center justify-center gap-2 p-4 bg-stone-50 rounded-2xl border border-stone-100 hover:border-brand active:bg-stone-100 transition-colors">
                    <span className="text-2xl">💧</span>
-                   <span className="text-xs font-bold text-stone-700">Acqua</span>
+                   <span className="text-xs font-bold text-stone-700">{t('water')}</span>
                  </button>
                  <button onClick={() => setShowCallModal(false)} className="flex flex-col items-center justify-center gap-2 p-4 bg-stone-50 rounded-2xl border border-stone-100 hover:border-brand active:bg-stone-100 transition-colors">
                    <span className="text-2xl">🙋‍♂️</span>
-                   <span className="text-xs font-bold text-stone-700">Staff</span>
+                   <span className="text-xs font-bold text-stone-700">{t('staff')}</span>
                  </button>
               </div>
               <button onClick={() => setShowCallModal(false)} className="w-full py-3 text-stone-400 font-bold text-sm hover:text-stone-600">
-                Annulla
+                {t('cancel')}
               </button>
            </div>
         </div>
