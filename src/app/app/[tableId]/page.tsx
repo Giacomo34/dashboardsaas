@@ -1,7 +1,8 @@
-import React from 'react';
+import React, { use } from 'react';
 import Link from 'next/link';
 
-export default function TableSplash({ params }: { params: { tableId: string } }) {
+export default function TableSplash(props: { params: Promise<{ tableId: string }> }) {
+  const params = use(props.params);
   return (
     <div className="min-h-screen bg-brand flex flex-col items-center justify-center p-6 text-center font-sans">
       <div className="w-24 h-24 bg-accent/20 rounded-full flex items-center justify-center text-5xl mb-8 animate-bounce">

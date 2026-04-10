@@ -1,12 +1,13 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, use } from 'react';
 import { menuData, MenuItem, MenuCategory } from '@/data/menu';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useCart } from '@/context/CartContext';
 
-export default function ItemDetail({ params }: { params: { tableId: string, id: string } }) {
+export default function ItemDetail(props: { params: Promise<{ tableId: string, id: string }> }) {
+  const params = use(props.params);
   const router = useRouter();
   const { addToCart } = useCart();
   const [foundItem, setFoundItem] = useState<MenuItem | null>(null);

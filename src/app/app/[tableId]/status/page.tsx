@@ -3,7 +3,8 @@ import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 
-export default function StatusPage({ params }: { params: { tableId: string } }) {
+export default function StatusPage(props: { params: Promise<{ tableId: string }> }) {
+  const params = React.use(props.params);
   const { clearCart } = useCart();
   const [orderId, setOrderId] = useState('');
 

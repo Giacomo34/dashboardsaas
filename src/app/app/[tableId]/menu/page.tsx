@@ -1,10 +1,11 @@
 'use client';
-import React from 'react';
+import React, { use } from 'react';
 import { menuData } from '@/data/menu';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
 
-export default function MobileMenuPage({ params }: { params: { tableId: string } }) {
+export default function MobileMenuPage(props: { params: Promise<{ tableId: string }> }) {
+  const params = use(props.params);
   const { totalItems, totalPrice } = useCart();
 
   return (

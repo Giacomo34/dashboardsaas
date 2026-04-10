@@ -90,7 +90,8 @@ function CartLogic({ tableId }: { tableId: string }) {
   );
 }
 
-export default function CartPage({ params }: { params: { tableId: string } }) {
+export default function CartPage(props: { params: Promise<{ tableId: string }> }) {
+  const params = React.use(props.params);
   return (
     <div className="min-h-screen bg-background font-sans">
       {/* Header */}
