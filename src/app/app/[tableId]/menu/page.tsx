@@ -1,5 +1,4 @@
-'use client';
-import React, { use } from 'react';
+import React, { use, useState } from 'react';
 import { menuData } from '@/data/menu';
 import Link from 'next/link';
 import { useCart } from '@/context/CartContext';
@@ -7,24 +6,28 @@ import { useCart } from '@/context/CartContext';
 export default function MobileMenuPage(props: { params: Promise<{ tableId: string }> }) {
   const params = use(props.params);
   const { totalItems, totalPrice } = useCart();
+  const [showCallModal, setShowCallModal] = useState(false);
 
   return (
-    <div className="min-h-screen bg-[#FDFBF7] font-sans pb-24 text-stone-900">
+    <div className="min-h-screen bg-[#FDFBF7] font-sans pb-24 text-stone-900 relative">
       {/* Header */}
-      <header className="sticky top-0 z-50 bg-[#FDFBF7]/90 backdrop-blur-md border-b border-stone-200 px-4 py-4">
+      <header className="sticky top-0 z-40 bg-[#FDFBF7]/90 backdrop-blur-md border-b border-stone-200 px-4 py-4">
         <div className="flex justify-between items-center">
           <div>
             <h1 className="text-xl font-bold text-[#800020]">Babaua Chiringuito</h1>
             <p className="text-sm text-stone-500">Mesa {params.tableId}</p>
           </div>
-          <div className="w-10 h-10 rounded-full bg-[#E07A5F] flex items-center justify-center text-white font-bold">
-            🐢
-          </div>
+          <button 
+            onClick={() => setShowCallModal(true)}
+            className="w-10 h-10 rounded-full bg-stone-100 flex items-center justify-center text-xl hover:bg-stone-200 transition-colors shadow-sm"
+          >
+            🛎️
+          </button>
         </div>
       </header>
 
       {/* Categorie Scroll (Orizzontale) */}
-      <div className="overflow-x-auto whitespace-nowrap px-4 py-3 sticky top-[73px] bg-[#FDFBF7] z-40 mb-4 shadow-sm" style={{ scrollbarWidth: 'none' }}>
+      <div className="overflow-x-auto whitespace-nowrap px-4 py-3 sticky top-[73px] bg-[#FDFBF7] z-30 mb-4 shadow-sm" style={{ scrollbarWidth: 'none' }}>
         <div className="flex gap-3">
           {menuData.map((category) => (
             <a
@@ -111,7 +114,7 @@ export default function MobileMenuPage(props: { params: Promise<{ tableId: strin
 
       {/* Floating Cart Badge */}
       {totalItems > 0 && (
-        <div className="fixed bottom-0 left-0 right-0 p-4 bg-transparent z-50 pointer-events-none">
+        <div className="fixed bottom-0 left-0 right-0 p-4 bg-transparent z-40 pointer-events-none">
           <Link href={`/app/${params.tableId}/cart`} className="pointer-events-auto bg-accent hover:bg-brand transition-colors text-white rounded-full p-4 flex items-center justify-between shadow-[0_8px_30px_rgba(224,122,95,0.4)]">
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-white/20 rounded-full flex items-center justify-center font-bold text-sm">
@@ -121,6 +124,39 @@ export default function MobileMenuPage(props: { params: Promise<{ tableId: strin
             </div>
             <span className="font-bold text-lg">€ {totalPrice.toLocaleString('es-ES', { minimumFractionDigits: 1 })}</span>
           </Link>
+        </div>
+      )}
+
+      {/* Call Waiter Modal */}
+      {showCallModal && (
+        <div className="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 flex items-end sm:items-center justify-center p-4">
+           <div className="bg-white w-full max-w-sm rounded-3xl p-6 shadow-2xl animate-in slide-in-from-bottom-10">
+              <div className="flex justify-between items-center mb-6">
+                <h3 className="font-bold text-xl text-stone-800">Serve aiuto?</h3>
+                <button onClick={() => setShowCallModal(false)} className="w-8 h-8 bg-stone-100 rounded-full flex items-center justify-center text-stone-500">✕</button>
+              </div>
+              <div className="grid grid-cols-2 gap-3 mb-6">
+                 <button onClick={() => setShowCallModal(false)} className="flex flex-col items-center justify-center gap-2 p-4 bg-stone-50 rounded-2xl border border-stone-100 hover:border-brand active:bg-stone-100 transition-colors">
+                   <span className="text-2xl">💸</span>
+                   <span className="text-xs font-bold text-stone-700">Conto</span>
+                 </button>
+                 <button onClick={() => setShowCallModal(false)} className="flex flex-col items-center justify-center gap-2 p-4 bg-stone-50 rounded-2xl border border-stone-100 hover:border-brand active:bg-stone-100 transition-colors">
+                   <span className="text-2xl">🧻</span>
+                   <span className="text-xs font-bold text-stone-700">Pulizia</span>
+                 </button>
+                 <button onClick={() => setShowCallModal(false)} className="flex flex-col items-center justify-center gap-2 p-4 bg-stone-50 rounded-2xl border border-stone-100 hover:border-brand active:bg-stone-100 transition-colors">
+                   <span className="text-2xl">💧</span>
+                   <span className="text-xs font-bold text-stone-700">Acqua</span>
+                 </button>
+                 <button onClick={() => setShowCallModal(false)} className="flex flex-col items-center justify-center gap-2 p-4 bg-stone-50 rounded-2xl border border-stone-100 hover:border-brand active:bg-stone-100 transition-colors">
+                   <span className="text-2xl">🙋‍♂️</span>
+                   <span className="text-xs font-bold text-stone-700">Staff</span>
+                 </button>
+              </div>
+              <button onClick={() => setShowCallModal(false)} className="w-full py-3 text-stone-400 font-bold text-sm hover:text-stone-600">
+                Annulla
+              </button>
+           </div>
         </div>
       )}
     </div>

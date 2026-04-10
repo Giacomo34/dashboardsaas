@@ -61,20 +61,45 @@ export default function ItemDetail(props: { params: Promise<{ tableId: string, i
   const extrasTotal = Array.from(checkedExtras).reduce((acc, idx) => acc + extras[idx].price, 0);
   const total = (itemPrice + extrasTotal) * quantity;
 
+  // Helper per emoji
+  const getEmoji = (name: string) => {
+    const l = name.toLowerCase();
+    if (l.includes('burra') || l.includes('campesina')) return '🥗';
+    if (l.includes('taco')) return '🌮';
+    if (l.includes('croissant')) return '🥐';
+    if (l.includes('bowl') || l.includes('açai')) return '🥣';
+    if (l.includes('spritz')) return '🍹';
+    if (l.includes('mejillones') || l.includes('pulpo') || l.includes('calamar') || l.includes('pescadito')) return '🐙';
+    if (l.includes('burger') || l.includes('mundaka')) return '🍔';
+    if (l.includes('sandwich') || l.includes('bocata') || l.includes('bikini')) return '🥪';
+    if (l.includes('tostada') || l.includes('shakshuka')) return '🍳';
+    if (l.includes('edamame') || l.includes('aceitunas') || l.includes('patatas')) return '🍟';
+    return '🍽️';
+  };
+
+  const itemEmoji = foundItem ? getEmoji(foundItem.name) : '🍽️';
+
   return (
     <div className="min-h-screen bg-background font-sans pb-32">
-      <div className="h-64 bg-stone-200 relative">
+      {/* Immagine dinamica ad alto impatto */}
+      <div className="h-72 bg-gradient-to-br from-orange-100 to-rose-100 relative overflow-hidden flex items-center justify-center">
         <div className="absolute top-4 left-4 z-10">
           <Link href={`/app/${params.tableId}/menu`} className="w-10 h-10 bg-white/80 backdrop-blur-md rounded-full flex items-center justify-center text-brand font-bold shadow-sm">
             ←
           </Link>
         </div>
-        <div className="absolute inset-0 flex items-center justify-center text-stone-400">
-          [Immagine Prodotto]
+        
+        {/* Cerchi decorativi */}
+        <div className="absolute w-64 h-64 bg-white/40 rounded-full blur-2xl -top-10 -right-10"></div>
+        <div className="absolute w-40 h-40 bg-accent/20 rounded-full blur-xl bottom-0 left-10"></div>
+
+        {/* Emoji gigante */}
+        <div className="text-9xl transform hover:scale-110 transition-transform duration-500 drop-shadow-xl z-10 relative">
+          {itemEmoji}
         </div>
       </div>
 
-      <div className="px-6 py-6 bg-white -mt-6 rounded-t-3xl relative z-20 shadow-[0_-4px_20px_rgba(0,0,0,0.05)]">
+      <div className="px-6 py-8 bg-white -mt-8 rounded-t-[2.5rem] relative z-20 shadow-[0_-10px_30px_rgba(0,0,0,0.06)]">
         <div className="flex justify-between items-start gap-4 mb-2">
           <h1 className="text-3xl font-black text-brand leading-tight">
             {foundItem.name} {foundItem.isSignature && <span className="text-accent" title="Signature">🐢</span>}

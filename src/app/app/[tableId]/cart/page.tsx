@@ -7,12 +7,25 @@ import { useCart } from '@/context/CartContext';
 function CartLogic({ tableId }: { tableId: string }) {
   const router = useRouter();
   const { cartItems, totalPrice, removeFromCart, clearCart } = useCart();
+  const [isCheckingOut, setIsCheckingOut] = React.useState(false);
 
   const handleCheckout = () => {
-    // Navigate to status screen simulating success
-    router.push(`/app/${tableId}/status`);
-    // Ideally clear cart, but maybe we do it on the status page
+    setIsCheckingOut(true);
+    // Simulate Apple Pay / Network latency
+    setTimeout(() => {
+      router.push(`/app/${tableId}/status`);
+    }, 1500);
   };
+
+  if (isCheckingOut) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-[60vh] px-4 text-center">
+        <div className="w-16 h-16 border-4 border-stone-200 border-t-brand rounded-full animate-spin mb-6"></div>
+        <h3 className="text-xl font-bold text-stone-800">Elaborazione Pagamento...</h3>
+        <p className="text-stone-500 mt-2">Connessione sicura in corso con Apple Pay</p>
+      </div>
+    );
+  }
 
   return (
     <div className="px-4 space-y-6 pt-6 bg-[#FDFBF7] min-h-screen pb-32">
@@ -62,11 +75,14 @@ function CartLogic({ tableId }: { tableId: string }) {
 
       {cartItems.length > 0 && (
         <>
-          {/* Recap & Payment */}
           <div className="bg-white p-6 rounded-2xl border border-stone-200 mt-8 shadow-[0_8px_30px_rgba(0,0,0,0.04)]">
             <div className="flex justify-between items-center mb-4 text-stone-600 font-medium">
               <span>Subtotale</span>
-              <span>{totalPrice.toLocaleString('es-ES', { minimumFractionDigits: 1 })} €</span>
+              <span>{(totalPrice * 0.9).toLocaleString('es-ES', { minimumFractionDigits: 1 })} €</span>
+            </div>
+            <div className="flex justify-between items-center mb-4 text-stone-600 font-medium text-sm">
+              <span>IVA (10%)</span>
+              <span>{(totalPrice * 0.1).toLocaleString('es-ES', { minimumFractionDigits: 1 })} €</span>
             </div>
             <div className="flex justify-between items-center text-xl font-black text-brand pt-4 border-t border-stone-100">
               <span>Totale</span>
@@ -74,16 +90,24 @@ function CartLogic({ tableId }: { tableId: string }) {
             </div>
           </div>
 
-          <button 
-            onClick={handleCheckout}
-            className="w-full h-14 bg-brand text-white rounded-full font-bold text-lg mt-8 mb-4 active:scale-[0.98] transition-transform shadow-lg shadow-brand/30"
-          >
-             Invia Ordine alla Cucina
-          </button>
+          <div className="space-y-3 mt-8">
+            <button 
+              onClick={handleCheckout}
+              className="w-full h-14 bg-black text-white rounded-xl font-bold text-lg flex items-center justify-center gap-2 active:scale-[0.98] transition-transform shadow-lg"
+            >
+              <span className="text-xl"></span> Pay
+            </button>
+            <button 
+              onClick={handleCheckout}
+              className="w-full h-14 bg-brand text-white rounded-xl font-bold text-lg flex items-center justify-center active:scale-[0.98] transition-transform shadow-lg shadow-brand/30"
+            >
+               Paga in Cassa (Contanti)
+            </button>
+          </div>
         </>
       )}
 
-      <Link href={`/app/${tableId}/menu`} className="block w-full h-14 bg-white border-2 border-stone-200 text-stone-600 rounded-full font-bold text-lg text-center flex items-center justify-center mb-12 hover:border-brand transition-colors">
+      <Link href={`/app/${tableId}/menu`} className="block w-full h-14 bg-white border-2 border-stone-200 text-stone-600 rounded-xl font-bold text-lg text-center flex items-center justify-center mb-12 hover:border-brand transition-colors mt-4">
          {cartItems.length === 0 ? "Torna al Menu" : "Aggiungi altro"}
       </Link>
     </div>
