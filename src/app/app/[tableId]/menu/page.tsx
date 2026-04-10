@@ -70,20 +70,44 @@ export default function MobileMenuPage(props: { params: Promise<{ tableId: strin
             </div>
 
             <div className="flex flex-col gap-4">
-              {category.items.map((item) => (
-                <Link
+              {category.items.map((item) => {
+                // Configuro allergeni
+                const getAllergenEmoji = (a: string) => {
+                  const l = a.toLowerCase();
+                  if (l.includes('gluten')) return '🌾';
+                  if (l.includes('lácteo') || l.includes('lacteo')) return '🥛';
+                  if (l.includes('fruto') || l.includes('nuez') || l.includes('sésamo')) return '🥜';
+                  if (l.includes('huevo')) return '🥚';
+                  if (l.includes('pescado')) return '🐟';
+                  if (l.includes('molusco') || l.includes('crustáceo') || l.includes('marisco')) return '🦐';
+                  if (l.includes('soja') || l.includes('soya')) return '🌱';
+                  if (l.includes('mostaza')) return '🌭';
+                  if (l.includes('sulfito')) return '🍷';
+                  return '';
+                };
+
+                return (
+                 <Link
                   key={item.id}
                   href={`/app/${params.tableId}/item/${item.id}`}
                   className="bg-white p-4 rounded-2xl shadow-sm border border-stone-100 flex flex-col gap-2 active:scale-[0.98] transition-transform"
-                >
+                 >
                   <div className="flex justify-between items-start gap-4">
                     <div className="flex-1">
-                      <div className="flex items-center gap-2 mb-1">
-                        <h3 className="font-bold text-lg text-stone-800 leading-tight">{item.name}</h3>
+                      <div className="flex items-center flex-wrap gap-1.5 mb-1">
+                        <h3 className="font-bold text-lg text-stone-800 leading-tight mr-1">{item.name}</h3>
                         {item.isSignature && <span className="text-[#E07A5F]" title="Signature">🐢</span>}
+                        {item.allergens?.map(a => {
+                          const emoji = getAllergenEmoji(a);
+                          return emoji ? (
+                            <span key={a} className="text-[13px] bg-stone-100 w-5 h-5 flex items-center justify-center rounded-full" title={a}>
+                              {emoji}
+                            </span>
+                          ) : null;
+                        })}
                       </div>
                       {item.description && (
-                        <p className="text-stone-500 text-sm line-clamp-2 leading-relaxed">
+                        <p className="text-stone-500 text-sm line-clamp-2 leading-relaxed mt-1">
                           {item.description}
                         </p>
                       )}
@@ -103,12 +127,12 @@ export default function MobileMenuPage(props: { params: Promise<{ tableId: strin
                     )}
                     {item.isVegan && (
                       <span className="px-2 py-0.5 rounded-sm bg-green-100 text-green-700 text-[10px] font-bold uppercase tracking-wider">
-                        Vegano
+                        {t('vegan')}
                       </span>
                     )}
                     {item.isVegetarian && !item.isVegan && (
                       <span className="px-2 py-0.5 rounded-sm bg-green-50 justify-center border border-green-200 text-green-700 text-[10px] font-bold uppercase tracking-wider">
-                        Vegetariano
+                        {t('vegetarian')}
                       </span>
                     )}
                      {item.isKids && (
@@ -116,14 +140,10 @@ export default function MobileMenuPage(props: { params: Promise<{ tableId: strin
                         Kids
                       </span>
                     )}
-                    {item.allergens && item.allergens.length > 0 && (
-                      <span className="text-[11px] text-stone-400 font-medium">
-                         Alérgenos: {item.allergens.join(', ')}
-                      </span>
-                    )}
                   </div>
-                </Link>
-              ))}
+                 </Link>
+                );
+              })}
             </div>
           </section>
         ))}
